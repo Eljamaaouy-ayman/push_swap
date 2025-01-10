@@ -1,5 +1,5 @@
 #include "push_swap.h"
-#include "./libft/libft.h"
+
 
 void sa(numbers **list_nbr)
 {

@@ -2,13 +2,14 @@
 # define PUSH_SWAP_H
 # include <stdlib.h>
 # include <stdio.h>
-#include "./libft/libft.h"
+
 
 typedef struct n_struct{
     int             number;
     struct n_struct *next;
 }               numbers;
 
+int	ft_atoi(const char *str);
 void sa(numbers **list_nbr);
 void ss(numbers **list_a, numbers **list_b);
 void pa(numbers **list_a, numbers **list_b);

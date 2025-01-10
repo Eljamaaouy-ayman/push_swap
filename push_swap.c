@@ -6,12 +6,40 @@
 /*   By: ael-jama <ael-jama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 16:09:05 by ael-jama          #+#    #+#             */
-/*   Updated: 2024/12/23 18:42:01 by ael-jama         ###   ########.fr       */
+/*   Updated: 2025/01/10 12:26:08 by ael-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
+int	ft_atoi(const char *str)
+{
+	size_t	i;
+	long	number;
+	int		sign;
+
+	sign = 1;
+	i = 0;
+	number = 0;
+	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
+		i++;
+	if (str[i] == '+' || str[i] == '-')
+	{
+		if (str[i] == '-')
+			sign *= -1;
+		i++;
+		if (str[i] == '+' || str[i] == '-')
+			return (0);
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		number = number * 10 + (str[i] - '0');
+		if (number < 0)
+			return ((-sign) * (sign == 1));
+		i++;
+	}
+	return ((int)(number * sign));
+}
 
 numbers	*ft_numlast(numbers *lst)
 {
@@ -83,52 +111,89 @@ int get_index(numbers *list, int number)
 }
 int same_move(numbers *list1, numbers*list2, numbers *ptr, numbers*ptr2)
 {
-	if(index(ptr) <= numsize(list1) / 2 && index(ptr2) <= numsize(list2) / 2)
+	if(get_index(list1, ptr->number) <= numsize(list1) / 2 && get_index(list2, ptr2->number) <= numsize(list2) / 2)
 	{
-		if(index(ptr) >= index(ptr2))
-			return index(ptr);
+		if(get_index(list1, ptr->number) >= get_index(list2, ptr2->number))
+			return get_index(list1, ptr->number);
 		else
-			return index(ptr2);
+			return get_index(list2, ptr2->number);
 	}
-	else if(index(ptr) > numsize(list1) /2 && index(ptr2) > numsize(list2) / 2)
+	else if(get_index(list1, ptr->number) > numsize(list1) /2 && get_index(list2, ptr2->number) > numsize(list2) / 2)
 	{
-		if(numsize(list1) - index(ptr) >= numsize(list2) - index(ptr2))
-			return numsize(list1) - index(ptr);
+		if(numsize(list1) - get_index(list1, ptr->number) >= numsize(list2) - get_index(list2, ptr2->number))
+			return numsize(list1) - get_index(list1, ptr->number);
 		else
-			return numsize(list2) - index(ptr2);
+			return numsize(list2) - get_index(list2, ptr2->number);
 	}
 	return (0);
 }
+int get_min(numbers *list)
+{
+	int min;
+	numbers *ptr;
 
-int find_cheapest(numbers *list1, numbers*list2)
+	ptr = list;
+	min = 2147483647;
+	while(ptr != NULL)
+	{
+		if (ptr->number < min)
+			min = ptr->number;
+	}
+	return min;
+}
+
+int get_max(numbers *list)
+{
+	int max;
+	numbers *ptr;
+
+	ptr = list;
+	max = -2147483648;
+	while(ptr != NULL)
+	{
+		if (ptr->number > max)
+			max = ptr->number;
+	}
+	return max;
+}
+int find_cheapest(numbers *list, numbers *list2)
 {
 	int cheapest;
 	numbers *ptr;
 	numbers *ptr2;
 
-	ptr = list1;
-	ptr2 = list2;
-	while(ptr->next != NULL)
+	cheapest = 	4294967295;
+	while(ptr != NULL)
 	{
-		if(get_index(list1, ptr->number) <= numsize(list1) / 2)
-			cheapest = get_index(list1, ptr->number) - 1;
-		else
-			cheapest = numsize(list1) - get_index(list1, ptr->number) - 1;
-		while(ptr2->next != NULL)
-		{
-			if(ptr->number < ptr2->number && ptr->number > ptr2->next->number)
-			{
-				if(get_index(list2, ptr2->number) <= numsize(list2) / 2)
-					cheapest += get_index(list2, ptr2->number) - 1;
-				else
-					cheapest += numsize(list2) - get_index(list2, ptr2->number) - 1;
-			}
-			ptr2 = ptr2->next;
-		}
+		if (count_moves(list, list2, ptr,ptr2) < cheapest)
+			cheapest = count_moves(list, list2, ptr,ptr2);
 		ptr = ptr->next;
 	}
-	//almost done but we don't return the cheapest one we should look for the cheapest one!!!!!
 	return cheapest;
+}
+int count_moves(numbers *list1, numbers *list2, numbers *ptr, numbers *ptr2)
+{
+	int moves;
+
+	if(same_move(list1, list2, ptr, ptr2) != 0)
+		return (same_move(list1, list2, ptr, ptr2) + 1);
+	if(get_index(list1, ptr->number) <= numsize(list1) / 2)
+		moves = get_index(list1, ptr->number);
+	else
+		moves = numsize(list1) - get_index(list1, ptr->number) + 2;
+	while(ptr2->next != NULL)
+	{
+		if((ptr->number < ptr2->number && ptr->number > ptr2->next->number) || (ptr->number > get_max(list2) && ptr2->number == get_max(list2)) || (ptr->number < get_min(list2) && ptr2->number == get_max(list2)))
+		{
+			if(get_index(list2, ptr2->number) <= numsize(list2) / 2)
+				moves += get_index(list2, ptr2->number) - 1;
+			else
+				moves += numsize(list2) - get_index(list2, ptr2->number);
+		}
+		ptr2 = ptr2->next;
+	}
+	ptr = ptr->next;
+	return moves;
 }
 
 void swap_three(numbers **list1)
@@ -151,7 +216,7 @@ void swap_three(numbers **list1)
 		if((*list1)->number > (*list1)->next->next->number && (*list1)->next->number > (*list1)->next->next->number)
 			rra(list1);
 	}
-	else if(ptr->number < ptr->next->number && ptr->next->next->number > ptr->number)
+	else if(ptr->number < ptr->next->number && ptr->next->next->number > ptr->number && ptr->next->next->number < ptr->next->number)
 	{
 		sa(list1);
 		ra(list1);

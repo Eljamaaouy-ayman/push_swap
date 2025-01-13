@@ -6,206 +6,121 @@
 /*   By: ael-jama <ael-jama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/21 16:09:05 by ael-jama          #+#    #+#             */
-/*   Updated: 2025/01/10 12:26:08 by ael-jama         ###   ########.fr       */
+/*   Updated: 2025/01/13 10:07:04 by ael-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-int	ft_atoi(const char *str)
+int moves_and_push(numbers **list1, numbers **list2, numbers *ptr)
 {
-	size_t	i;
-	long	number;
-	int		sign;
-
-	sign = 1;
-	i = 0;
-	number = 0;
-	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
-		i++;
-	if (str[i] == '+' || str[i] == '-')
-	{
-		if (str[i] == '-')
-			sign *= -1;
-		i++;
-		if (str[i] == '+' || str[i] == '-')
-			return (0);
-	}
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		number = number * 10 + (str[i] - '0');
-		if (number < 0)
-			return ((-sign) * (sign == 1));
-		i++;
-	}
-	return ((int)(number * sign));
-}
-
-numbers	*ft_numlast(numbers *lst)
-{
-	numbers	*ptr;
-
-	if (lst == NULL)
-		return (NULL);
-	ptr = lst;
-	while (ptr->next != NULL)
-		ptr = ptr->next;
-	return (ptr);
-}
-
-void	ft_numadd_back(numbers **lst, numbers *new)
-{
-	numbers	*ptr;
-
-	if (lst == NULL)
-		return ;
-	if (*lst == NULL)
-		*lst = new;
-	else if (new != NULL)
-	{
-		ptr = ft_numlast(*lst);
-		ptr->next = new;
-	}
-}
-
-numbers	*new_num(int num)
-{
-	numbers	*new_num;
-
-	new_num = (numbers *)malloc(sizeof(numbers));
-	if (new_num == NULL)
-		return (NULL);
-	new_num->number = num;
-	new_num->next = NULL;
-	return (new_num);
-}
-int	numsize(numbers *lst)
-{
-	size_t	i;
-	numbers	*ptr;
-
-	if (lst == NULL)
-		return (0);
-	i = 0;
-	ptr = lst;
-	while (ptr != NULL)
-	{
-		i++;
-		ptr = ptr->next;
-	}
-	return (i);
-}
-int get_index(numbers *list, int number)
-{
-	numbers	*ptr;
-	int		i;
-
-	i = 1;
-	ptr = list;
-	while(ptr->number != number)
-	{
-		ptr = ptr->next;
-		i++;
-	}
-	return (i);
-}
-int same_move(numbers *list1, numbers*list2, numbers *ptr, numbers*ptr2)
-{
-	if(get_index(list1, ptr->number) <= numsize(list1) / 2 && get_index(list2, ptr2->number) <= numsize(list2) / 2)
-	{
-		if(get_index(list1, ptr->number) >= get_index(list2, ptr2->number))
-			return get_index(list1, ptr->number);
-		else
-			return get_index(list2, ptr2->number);
-	}
-	else if(get_index(list1, ptr->number) > numsize(list1) /2 && get_index(list2, ptr2->number) > numsize(list2) / 2)
-	{
-		if(numsize(list1) - get_index(list1, ptr->number) >= numsize(list2) - get_index(list2, ptr2->number))
-			return numsize(list1) - get_index(list1, ptr->number);
-		else
-			return numsize(list2) - get_index(list2, ptr2->number);
-	}
-	return (0);
-}
-int get_min(numbers *list)
-{
-	int min;
-	numbers *ptr;
-
-	ptr = list;
-	min = 2147483647;
-	while(ptr != NULL)
-	{
-		if (ptr->number < min)
-			min = ptr->number;
-	}
-	return min;
-}
-
-int get_max(numbers *list)
-{
-	int max;
-	numbers *ptr;
-
-	ptr = list;
-	max = -2147483648;
-	while(ptr != NULL)
-	{
-		if (ptr->number > max)
-			max = ptr->number;
-	}
-	return max;
-}
-int find_cheapest(numbers *list, numbers *list2)
-{
-	int cheapest;
-	numbers *ptr;
 	numbers *ptr2;
+	numbers *ptr3;
 
-	cheapest = 	4294967295;
-	while(ptr != NULL)
+	ptr2 = *list2;
+	ptr3 = ptr2;
+	while(!((ptr->number < ptr3->number && ptr->number > ptr2->number) || (ptr->number > get_max(*list2) && ptr2->number == get_max(*list2)) || (ptr->number < get_min(*list2) && ptr2->number == get_max(*list2))) && ptr2 != NULL)
 	{
-		if (count_moves(list, list2, ptr,ptr2) < cheapest)
-			cheapest = count_moves(list, list2, ptr,ptr2);
-		ptr = ptr->next;
-	}
-	return cheapest;
-}
-int count_moves(numbers *list1, numbers *list2, numbers *ptr, numbers *ptr2)
-{
-	int moves;
-
-	if(same_move(list1, list2, ptr, ptr2) != 0)
-		return (same_move(list1, list2, ptr, ptr2) + 1);
-	if(get_index(list1, ptr->number) <= numsize(list1) / 2)
-		moves = get_index(list1, ptr->number);
-	else
-		moves = numsize(list1) - get_index(list1, ptr->number) + 2;
-	while(ptr2->next != NULL)
-	{
-		if((ptr->number < ptr2->number && ptr->number > ptr2->next->number) || (ptr->number > get_max(list2) && ptr2->number == get_max(list2)) || (ptr->number < get_min(list2) && ptr2->number == get_max(list2)))
-		{
-			if(get_index(list2, ptr2->number) <= numsize(list2) / 2)
-				moves += get_index(list2, ptr2->number) - 1;
-			else
-				moves += numsize(list2) - get_index(list2, ptr2->number);
-		}
+		ptr3 = ptr2;
 		ptr2 = ptr2->next;
 	}
-	ptr = ptr->next;
-	return moves;
+	if(push_same_move(list1, list2, ptr, ptr2) != 0)
+	{
+		pa(list2, list1);
+		return 0;
+	}
+	if(get_index(*list1, ptr->number) <= numsize(*list1) / 2)
+		single_moves(list1, get_index(*list1, ptr->number) - 1, 'u');
+	else
+		single_moves(list1, numsize(*list1) - get_index(*list1, ptr->number) + 1, 'd');
+	// printf("hhh");
+	if(get_index(*list2, ptr2->number) <= numsize(*list2) / 2)
+		single_moves(list2, get_index(*list2, ptr2->number) - 1, 'u');
+	else
+		single_moves(list2, numsize(*list2) - get_index(*list2, ptr2->number) + 1, 'd');
+	pa(list2, list1);
+	return 0;
+}
+void single_moves(numbers **list, int number, char s)
+{
+	if(s == 'u')
+	{
+		while(number > 0)
+		{
+			rra(list);
+		}
+	}
+
+	if(s == 'd')
+	{
+		while(number > 0)
+		{
+			ra(list);
+		}
+	}
+}
+
+void do_moves(numbers **list1, numbers **list2, int min, int other, char s)
+{
+	if(s == 'u'){
+		while(min > 0)
+		{
+			rr(list1, list2);
+			min--;
+		}
+		while(other > 0)
+			ra(list1);
+	}
+	else if(s == 'd')
+	{
+		while(min > 0)
+		{
+			rrr(list1, list2);
+			min--;
+		}
+		while(other > 0)
+			rra(list1);
+	}
+}
+int push_same_move(numbers **list1, numbers **list2, numbers *ptr, numbers *ptr2)
+{
+	int first_moves;
+	int second_moves;
+	get_index(*list2, ptr2->number);
+	numsize(*list2) / 2;
+		
+	if(get_index(*list1, ptr->number) <= numsize(*list1) / 2 && get_index(*list2, ptr2->number) <= numsize(*list2) / 2)
+	{
+		first_moves = get_index(*list2, ptr2->number) - 1;
+		second_moves = get_index(*list1, ptr->number) - 1;
+		if(first_moves < second_moves)
+			do_moves(list2, list1, second_moves, first_moves - second_moves, 'u');
+		else
+			do_moves(list2, list1, second_moves, second_moves - first_moves, 'u');
+		return 1;
+	}
+	else if(get_index(*list1, ptr->number) > numsize(*list1) / 2 && get_index(*list2, ptr2->number) > numsize(*list2) / 2)
+	{
+	// printf("hhh");
+		first_moves = numsize(*list2) - get_index(*list2, ptr2->number) + 1;
+		second_moves = numsize(*list1) - get_index(*list1, ptr->number) + 1;
+		if(first_moves < second_moves)
+			do_moves(list2, list1, second_moves, first_moves - second_moves, 'd');
+		else
+			do_moves(list1, list2, first_moves, second_moves - first_moves, 'd');
+		return 1;
+	}
+	return 0;
+			// printf("%d", numsize(list1) - get_index(list1, ptr->number) + 2);
 }
 
 void swap_three(numbers **list1)
 {
 	numbers *list2;
+	numbers *ptr;
 
 	list2 = NULL;
-	while(numsize(*list1) > 3)
-		pa(&list2, list1);
-	numbers *ptr = *list1;
-	// printf("%d\n", ptr->number);
-	// printf("%d, %d, %d", ptr->number, ptr->next->number, ptr->next->next->number);
+	ptr = *list1;
 	if(ptr->number < ptr->next->number && ptr->number > (ptr->next)->next->number)
 		rra(list1);
 	else if (ptr->number > ptr->next->number && ptr->next->number < ptr->next->next->number && ptr->number > ptr->next->next->number)
@@ -221,18 +136,55 @@ void swap_three(numbers **list1)
 		sa(list1);
 		ra(list1);
 	}
-	printf("%d, %d, %d", (*list1)->number, (*list1)->next->number, (*list1)->next->next->number);
 }
 //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
 int main(int ac, char **av){
-    int i;
+	int i;
 
-    i = 1;
-    numbers *num_list = NULL;
-    while(i < ac)
-    {
-        ft_numadd_back(&num_list, new_num(ft_atoi(av[i])));
-        i++;
-    }
-    swap_three(&num_list);
+	i = 1;
+	numbers *num_list = NULL;
+	numbers *list_b = NULL;
+	numbers *ptr;
+	numbers *ptr2;
+	while(i < ac)
+	{
+		ft_numadd_back(&num_list, new_num(ft_atoi(av[i])));
+		i++;
+	}
+	while (numsize(list_b) < 2)
+	{
+		pa(&list_b, &num_list);
+	}
+	ptr = num_list;
+	ptr2 = list_b;
+	
+	// while (numsize(num_list) > 4)
+		moves_and_push(&num_list, &list_b, find_cheapest(num_list, list_b));
+		moves_and_push(&num_list, &list_b, find_cheapest(num_list, list_b));
+		moves_and_push(&num_list, &list_b, find_cheapest(num_list, list_b));
+		moves_and_push(&num_list, &list_b, find_cheapest(num_list, list_b));
+		
+		moves_and_push(&num_list, &list_b, find_cheapest(num_list, list_b));
+		numbers *cheap = find_cheapest(num_list, list_b);
+		printf("%d\n", cheap->number);
+		// moves_and_push(&num_list, &list_b, find_cheapest(num_list, list_b));
+		// moves_and_push(&num_list, &list_b, find_cheapest(num_list, list_b));
+	
+	// swap_three(&num_list);
+		ptr2 = list_b;
+	while(ptr2 != NULL){
+		printf("%d\n", ptr2->number);
+		ptr2 = ptr2->next;
+	}
+		
+	// 	moves_and_push(&num_list, &list_b, find_cheapest(num_list, list_b));
+	// printf("HHHHHHHHHHHHHHH -> %d", numsize(num_list));
+	ptr = num_list;
+
+	printf("-----------------------\n");
+	while(ptr != NULL){
+		printf("%d\n", ptr->number);
+		ptr = ptr->next;
+	}
+	printf("the size is -> %d", numsize(list_b));
 }

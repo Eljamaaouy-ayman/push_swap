@@ -38,14 +38,20 @@ void ra(numbers **list_a)
     numbers *first;
     numbers *ptr;
 
-    if(!(*list_a) || !(*list_a)->next)
-        return ;
-    first = *list_a;
-    *list_a = first->next;
-    first->next = NULL;
-    ptr = *list_a;
-    ptr->next->next = first;
-    // printf("%d, %d, %d", ptr->number, ptr->next->number, ptr->next->next->number);
+    // Handle edge cases: empty list or single-node list
+    if (!(*list_a) || !(*list_a)->next)
+        return;
+
+    first = *list_a;         // Save the first node
+    *list_a = first->next;   // Move the head to the second node
+    first->next = NULL;      // Detach the first node
+
+    ptr = *list_a;           // Start from the new head
+    while (ptr->next != NULL) { // Traverse to the last node
+        ptr = ptr->next;
+    }
+
+    ptr->next = first;       // Attach the old first node to the end
 }
 void rr(numbers **list_a, numbers **list_b)
 {

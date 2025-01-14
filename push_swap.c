@@ -86,8 +86,6 @@ int push_same_move(numbers **list1, numbers **list2, numbers *ptr, numbers *ptr2
 {
 	int first_moves;
 	int second_moves;
-	get_index(*list2, ptr2->number);
-	numsize(*list2) / 2;
 		
 	if(get_index(*list1, ptr->number) <= numsize(*list1) / 2 && get_index(*list2, ptr2->number) <= numsize(*list2) / 2)
 	{
@@ -163,8 +161,11 @@ int main(int ac, char **av){
 		moves_and_push(&num_list, &list_b, find_cheapest(num_list, list_b));
 		moves_and_push(&num_list, &list_b, find_cheapest(num_list, list_b));
 		moves_and_push(&num_list, &list_b, find_cheapest(num_list, list_b));
-		
 		moves_and_push(&num_list, &list_b, find_cheapest(num_list, list_b));
+		moves_and_push(&num_list, &list_b, find_cheapest(num_list, list_b));
+		moves_and_push(&num_list, &list_b, find_cheapest(num_list, list_b));
+		
+		// moves_and_push(&num_list, &list_b, find_cheapest(num_list, list_b));
 		numbers *cheap = find_cheapest(num_list, list_b);
 		printf("%d\n", cheap->number);
 		// moves_and_push(&num_list, &list_b, find_cheapest(num_list, list_b));

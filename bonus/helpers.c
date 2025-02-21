@@ -6,11 +6,11 @@
 /*   By: ael-jama <ael-jama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 11:49:06 by ael-jama          #+#    #+#             */
-/*   Updated: 2025/02/07 09:59:48 by ael-jama         ###   ########.fr       */
+/*   Updated: 2025/02/06 20:36:20 by ael-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap.h"
+#include "push_swap_bonus.h"
 
 long	ft_atoi(const char *str)
 {
@@ -80,16 +80,12 @@ t_numbers	*new_num(int num)
 	return (new_num);
 }
 
-int	is_only_spaces(char *str)
+int	ft_strcmp(char *s1, char *s2)
 {
-	int	i;
-
-	i = 0;
-	while (str[i])
+	while (*s1 && (*s1 == *s2))
 	{
-		if (str[i] != ' ')
-			return (0);
-		i++;
+		s1++;
+		s2++;
 	}
-	return (1);
+	return ((unsigned char)*s1 - (unsigned char)*s2);
 }

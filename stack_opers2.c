@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   stack_opers.c                                      :+:      :+:    :+:   */
+/*   stack_opers2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ael-jama <ael-jama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/06 17:37:18 by ael-jama          #+#    #+#             */
-/*   Updated: 2025/02/07 10:48:17 by ael-jama         ###   ########.fr       */
+/*   Created: 2025/02/04 17:10:09 by ael-jama          #+#    #+#             */
+/*   Updated: 2025/02/07 10:48:01 by ael-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	ra(t_numbers **list)
+void	r(t_numbers **list)
 {
 	t_numbers	*tmp;
 	t_numbers	*move;
@@ -26,27 +26,38 @@ void	ra(t_numbers **list)
 	while (move->next)
 		move = move->next;
 	move->next = tmp;
-	write(1, "ra\n", 3);
 }
 
-void	rb(t_numbers **list)
+void	rr(t_numbers **a, t_numbers **b)
 {
-	t_numbers	*tmp;
-	t_numbers	*move;
-
-	if (!list || !(*list) || !((*list)->next))
-		return ;
-	tmp = *list;
-	*list = (*list)->next;
-	tmp->next = NULL;
-	move = *list;
-	while (move->next)
-		move = move->next;
-	move->next = tmp;
-	write(1, "rb\n", 3);
+	r(a);
+	r(b);
+	write(1, "rr\n", 3);
 }
 
-void	rra(t_numbers **list)
+void	s(t_numbers **list)
+{
+	t_numbers	*first;
+	t_numbers	*second;
+	int			tmp;
+
+	if (!list || !(*list) || !(*list)->next)
+		return ;
+	first = *list;
+	second = (*list)->next;
+	tmp = first->number;
+	first->number = second->number;
+	second->number = tmp;
+}
+
+void	ss(t_numbers **a, t_numbers **b)
+{
+	s(a);
+	s(b);
+	write(1, "ss\n", 3);
+}
+
+void	rrrr(t_numbers **list)
 {
 	t_numbers	*tmp;
 	t_numbers	*move;
@@ -62,31 +73,4 @@ void	rra(t_numbers **list)
 	tmp->next = NULL;
 	move->next = *list;
 	*list = move;
-	write(1, "rra\n", 4);
-}
-
-void	rrb(t_numbers **list)
-{
-	t_numbers	*tmp;
-	t_numbers	*move;
-
-	if (!list || !(*list) || !(*list)->next)
-		return ;
-	move = *list;
-	while (move->next)
-	{
-		tmp = move;
-		move = move->next;
-	}
-	tmp->next = NULL;
-	move->next = *list;
-	*list = move;
-	write(1, "rrb\n", 4);
-}
-
-void	rrr(t_numbers **a, t_numbers **b)
-{
-	rrrr(a);
-	rrrr(b);
-	write(1, "rrr\n", 3);
 }
